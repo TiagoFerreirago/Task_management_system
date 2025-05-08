@@ -35,12 +35,13 @@ public class TaskController {
 		return ResponseEntity.ok().body(tasks);
 	}
 	
-	@GetMapping(value = "/id")
+	@GetMapping(value = "/{id}")
 	public ResponseEntity<Task>findById(@PathVariable("id")Long id) throws AccountException{
 		
 		Task task = taskService.findById(id);
 		return ResponseEntity.ok().body(task);
 	}
+	
 	@GetMapping(value ="/by-date")
 	public ResponseEntity<List<Task>> searchByDate(@RequestParam("date")
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate date){
@@ -48,15 +49,17 @@ public class TaskController {
 		List<Task>tasks = taskService.searchByDate(date);
 		return ResponseEntity.ok().body(tasks);
 	}
-	@GetMapping(value = "/beetwen-date")
-	public ResponseEntity<List<Task>> searchBeetwenPeriod(@RequestParam("firstDate")
+	
+	@GetMapping(value = "/between-date")
+	public ResponseEntity<List<Task>> searchBetweenPeriod(@RequestParam("firstDate")
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate firstDate,
 	@RequestParam("lastDate")@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate lastDate){
 		
-		List<Task> tasks = taskService.searchBeetwenPeriod(firstDate, lastDate);
+		List<Task> tasks = taskService.searchBetweenPeriod(firstDate, lastDate);
 		return ResponseEntity.ok().body(tasks);
 	}
-	@GetMapping(value = "/status")
+	
+	@GetMapping(value = "/completed")
 	public ResponseEntity<List<Task>> searchByStatus(@RequestParam("status")boolean status){
 		
 		List<Task> tasks = taskService.searchByStatus(status);
@@ -77,7 +80,7 @@ public class TaskController {
 		return ResponseEntity.ok().body(entity);
 	}
 	
-	@PutMapping
+	@PutMapping("/{id}")
 	public ResponseEntity<Task>completed(@PathVariable("id")Long id) throws AccountException{
 		
 		Task task = taskService.markAsCompleted(id);

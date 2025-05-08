@@ -34,9 +34,9 @@ public class TaskService {
 		return tasks;
 	}
 	
-	public List<Task> searchBeetwenPeriod(LocalDate firstDate, LocalDate lastDate){
+	public List<Task> searchBetweenPeriod(LocalDate firstDate, LocalDate lastDate){
 		
-		List<Task> tasks = taskRepository.searchBeetwenPeriod(firstDate, lastDate);
+		List<Task> tasks = taskRepository.searchBetweenPeriod(firstDate, lastDate);
 		return tasks;
 	}
 	
