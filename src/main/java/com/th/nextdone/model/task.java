@@ -2,6 +2,8 @@ package com.th.nextdone.model;
 
 import java.time.LocalDate;
 
+import com.th.nextdone.dto.TaskDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,6 +24,14 @@ public class Task {
 	private boolean completed;
 	
 	private LocalDate dataCreation = LocalDate.now();
+	
+	public Task(TaskDto dto) {
+		setId(dto.id());
+		setTitle(dto.title());
+		setDescription(dto.description());
+		setCompleted(dto.completed());
+		setDataCreation(dto.dataCreation());
+	}
 
 	public Long getId() {
 		return id;

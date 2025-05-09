@@ -2,12 +2,14 @@ package com.th.nextdone.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.security.auth.login.AccountException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.th.nextdone.dto.TaskDto;
 import com.th.nextdone.exception.InvalidDataException;
 import com.th.nextdone.exception.TaskNotFoundException;
 import com.th.nextdone.model.Task;
@@ -19,21 +21,25 @@ public class TaskService {
 	@Autowired
 	private TaskRepository taskRepository;
 	
-	public List<Task>findAll(){
+	public List<TaskDto>findAll(){
 		List<Task> tasks = taskRepository.findAll();
 		if(tasks.isEmpty()) {
 			throw new TaskNotFoundException("No tasks found");
 		}
-		return tasks;
+		List<TaskDto> dtoList = tasks.stream()
+		        .map(p -> new TaskDto(p.getId(), p.getTitle(), p.getDescription(), p.isCompleted(), p.getDataCreation()))
+		        .collect(Collectors.toList());
+		return dtoList;
 	}
 	
-	public Task findById(Long id) throws AccountException {
+	public TaskDto findById(Long id) throws AccountException {
 		
 		Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task with ID " + id + " not found."));
-		return task;
+		TaskDto dto = new TaskDto(task.getId(), task.getTitle(), task.getDescription(), task.isCompleted(), task.getDataCreation());
+		return dto;
 	}
 	
-	public List<Task> searchByDate(LocalDate date){
+	public List<TaskDto> searchByDate(LocalDate date){
 		
 		if(date == null) {
 			throw new IllegalArgumentException("Date cannot be null.");
@@ -43,10 +49,12 @@ public class TaskService {
 		if(tasks.isEmpty()) {
 			throw new TaskNotFoundException("No tasks found for the given date.");
 		}
-		return tasks;
+		List<TaskDto> dtoList = tasks.stream().map(p ->
+		new TaskDto(p.getId(), p.getTitle(), p.getDescription(), p.isCompleted(), p.getDataCreation())).collect(Collectors.toList());
+		return dtoList;
 	}
 	
-	public List<Task> searchBetweenPeriod(LocalDate firstDate, LocalDate lastDate){
+	public List<TaskDto> searchBetweenPeriod(LocalDate firstDate, LocalDate lastDate){
 		
 		if (firstDate == null || lastDate == null) {
 	        throw new IllegalArgumentException("Dates cannot be null.");
@@ -61,20 +69,25 @@ public class TaskService {
 		if(tasks.isEmpty()) {
 			throw new TaskNotFoundException("No tasks found in the specified period.");
 		}
-		return tasks;
+		List<TaskDto> dtoList = tasks.stream().map(p ->
+		new TaskDto(p.getId(), p.getTitle(), p.getDescription(), p.isCompleted(), p.getDataCreation())).collect(Collectors.toList());
+		return dtoList;
 	}
 	
-	public List<Task> searchByStatus(boolean status){
+	public List<TaskDto> searchByStatus(boolean status){
 		
 		List<Task> tasks = taskRepository.searchByStatus(status);
 		 if (tasks.isEmpty()) {
 		        throw new TaskNotFoundException("No tasks found with status: " + status);
 		 }
-
-		return tasks;
+		 List<TaskDto> dtoList = tasks.stream().map(p ->
+			new TaskDto(p.getId(), p.getTitle(), p.getDescription(), p.isCompleted(), p.getDataCreation())).collect(Collectors.toList());
+		return dtoList;
 	}
 	
-	public Task save(Task task) {
+	public TaskDto save(TaskDto taskDto) {
+		
+		Task task = new Task(taskDto);
 		
 		if(task.getTitle() == null || task.getTitle().isEmpty()) {
 			throw new InvalidDataException("Task title is required");
@@ -82,8 +95,10 @@ public class TaskService {
 		if(task.getDescription() == null || task.getDescription().isEmpty()) {
 			throw new InvalidDataException("Task description is required");
 		}
+		taskRepository.save(task);
+		TaskDto dto = new TaskDto(task.getId(), task.getTitle(), task.getDescription(), task.isCompleted(), task.getDataCreation());
 		
-		return taskRepository.save(task);
+		return dto;
 	}
 	
 	public void delete(Long id) {
@@ -91,10 +106,12 @@ public class TaskService {
 		taskRepository.delete(task);
 	}
 	
-	public Task markAsCompleted(Long id) throws AccountException {
+	public TaskDto markAsCompleted(Long id) throws AccountException {
 		
 		Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task with ID " + id + " not found."));
 		task.setCompleted(true);
-		return taskRepository.save(task);
+		taskRepository.save(task);
+		TaskDto dto = new TaskDto(task.getId(), task.getTitle(), task.getDescription(), task.isCompleted(), task.getDataCreation());
+		return dto;
 	}
 }

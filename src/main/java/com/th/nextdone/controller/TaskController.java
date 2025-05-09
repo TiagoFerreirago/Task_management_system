@@ -7,6 +7,7 @@ import javax.security.auth.login.AccountException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.th.nextdone.model.Task;
+import com.th.nextdone.dto.TaskDto;
 import com.th.nextdone.service.TaskService;
 
 @RestController
@@ -29,44 +30,44 @@ public class TaskController {
 	private TaskService taskService;
 	
 	@GetMapping
-	public ResponseEntity<List<Task>>findAll(){
+	public ResponseEntity<List<TaskDto>>findAll(){
 		
-		List<Task>tasks = taskService.findAll();
-		return ResponseEntity.ok().body(tasks);
+		List<TaskDto>tasksDto = taskService.findAll();
+		return ResponseEntity.ok().body(tasksDto);
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Task>findById(@PathVariable("id")Long id) throws AccountException{
+	public ResponseEntity<TaskDto>findById(@PathVariable("id")Long id) throws AccountException{
 		
-		Task task = taskService.findById(id);
-		return ResponseEntity.ok().body(task);
+		TaskDto taskDto = taskService.findById(id);
+		return ResponseEntity.ok().body(taskDto);
 	}
 	
 	@GetMapping(value ="/by-date")
-	public ResponseEntity<List<Task>> searchByDate(@RequestParam("date")
+	public ResponseEntity<List<TaskDto>> searchByDate(@RequestParam("date")
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate date){
 		
-		List<Task>tasks = taskService.searchByDate(date);
-		return ResponseEntity.ok().body(tasks);
+		List<TaskDto>tasksDto = taskService.searchByDate(date);
+		return ResponseEntity.ok().body(tasksDto);
 	}
 	
 	@GetMapping(value = "/between-date")
-	public ResponseEntity<List<Task>> searchBetweenPeriod(@RequestParam("firstDate")
+	public ResponseEntity<List<TaskDto>> searchBetweenPeriod(@RequestParam("firstDate")
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate firstDate,
 	@RequestParam("lastDate")@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate lastDate){
 		
-		List<Task> tasks = taskService.searchBetweenPeriod(firstDate, lastDate);
-		return ResponseEntity.ok().body(tasks);
+		List<TaskDto> tasksDto = taskService.searchBetweenPeriod(firstDate, lastDate);
+		return ResponseEntity.ok().body(tasksDto);
 	}
 	
 	@GetMapping(value = "/completed")
-	public ResponseEntity<List<Task>> searchByStatus(@RequestParam("status")boolean status){
+	public ResponseEntity<List<TaskDto>> searchByStatus(@RequestParam("status")boolean status){
 		
-		List<Task> tasks = taskService.searchByStatus(status);
-		return ResponseEntity.ok().body(tasks);
+		List<TaskDto> tasksDto = taskService.searchByStatus(status);
+		return ResponseEntity.ok().body(tasksDto);
 	}
 	
-	@DeleteMapping(value = "/id")
+	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Void>delete(@PathVariable("id")Long id){
 		
 		taskService.delete(id);
@@ -74,16 +75,16 @@ public class TaskController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Task>save(@RequestBody Task task){
+	public ResponseEntity<TaskDto>save(@RequestBody TaskDto taskDto){
 		
-		Task entity = taskService.save(task);
-		return ResponseEntity.ok().body(entity);
+		TaskDto entityDto = taskService.save(taskDto);
+		return ResponseEntity.status(HttpStatus.CREATED).body(entityDto);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Task>completed(@PathVariable("id")Long id) throws AccountException{
+	public ResponseEntity<TaskDto>completed(@PathVariable("id")Long id) throws AccountException{
 		
-		Task task = taskService.markAsCompleted(id);
-		return ResponseEntity.ok().body(task);
+		TaskDto taskDto = taskService.markAsCompleted(id);
+		return ResponseEntity.ok().body(taskDto);
 	}
 }
