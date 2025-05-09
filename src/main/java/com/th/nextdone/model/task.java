@@ -25,6 +25,7 @@ public class Task {
 	
 	private LocalDate dataCreation = LocalDate.now();
 	
+	public Task() {}
 	public Task(TaskDto dto) {
 		setId(dto.id());
 		setTitle(dto.title());
