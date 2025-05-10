@@ -20,13 +20,14 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 import com.th.nextdone.exception.InvalidJwtAuthenticationException;
 import com.th.nextdone.security.accountcredentials.TokenDto;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class JwtTokenProvider {
 
 	@Value("${security.jwt.token.secretKey:secret}")
 	private String secretKey;
-	@Value("${security.jwt.token.expired-length:3600000")
+	@Value("${security.jwt.token.expired-length:3600000}")
 	private long validMilliseconds = 3600000;
 	
 	@Autowired
@@ -34,20 +35,21 @@ public class JwtTokenProvider {
 	
 	Algorithm algorithm = null;
 	
+	@PostConstruct
 	protected void init() {
 		
 		secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
 		algorithm = Algorithm.HMAC256(secretKey.getBytes());
 	}
 	
-	public TokenDto createAcessToken(String username, List<String>roles) {
+	public TokenDto createAccessToken(String username, List<String>roles) {
 		
 		Date now = new Date();
 		Date validity = new Date( now.getTime() + validMilliseconds);
-		String AcessToken = getAcessToken(username,roles,now,validity);
+		String accessToken = getAccessToken(username,roles,now,validity);
 		String refreshToken = getRefreshToken(username,roles,now);
 		
-		return new TokenDto(username, true, now, validity, AcessToken, refreshToken);
+		return new TokenDto(username, true, now, validity, accessToken, refreshToken);
 	}
 
 	private String getRefreshToken(String username, List<String> roles, Date now) {
@@ -62,7 +64,7 @@ public class JwtTokenProvider {
 				.toString();
 	}
 
-	private String getAcessToken(String username, List<String> roles, Date now, Date validity) {
+	private String getAccessToken(String username, List<String> roles, Date now, Date validity) {
 
 		String issuerUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 		return JWT.create()
@@ -94,8 +96,8 @@ public class JwtTokenProvider {
 		
 		String bearerToken = request.getHeader("Authorization");
 		
-			if(StringUtils.isEmpty(bearerToken) && bearerToken.startsWith("Bearer ")) {
-				return bearerToken.substring("Bearer" .length());
+			if(StringUtils.isNotEmpty(bearerToken) && bearerToken.startsWith("Bearer ")) {
+				return bearerToken.substring("Bearer " .length());
 			}
 			else {
 				throw new InvalidJwtAuthenticationException("Invalid JWTtoken");
