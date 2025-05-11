@@ -3,6 +3,7 @@ package com.th.nextdone.security.jwt;
 import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
@@ -32,10 +33,14 @@ public class JwtTokenFilter extends GenericFilterBean {
 				if(authentication != null) {
 					SecurityContextHolder.getContext().setAuthentication(authentication);
 				}
+				else {
+					throw new BadCredentialsException("Invalid JWT token");
+				}
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			throw new ServletException("JWT authentication failed", e);
 		}
 		chain.doFilter(request, response);
 	}
