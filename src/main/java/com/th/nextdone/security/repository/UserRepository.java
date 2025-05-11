@@ -8,6 +8,6 @@ import com.th.nextdone.security.model.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-	@Query("SELECT u FROM User u WHERE u.userName =:userName")
-	User findByName(@Param("userName")String userName);
+	@Query("SELECT u FROM User u WHERE u.username =:username")
+	User findByName(@Param("username")String username);
 }
