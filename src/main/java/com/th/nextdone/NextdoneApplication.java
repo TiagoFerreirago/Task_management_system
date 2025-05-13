@@ -1,35 +1,13 @@
 package com.th.nextdone;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm;
 
 @SpringBootApplication
 public class NextdoneApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(NextdoneApplication.class, args);
-		generatedHashedPassword();
 	}
 
-	private static void generatedHashedPassword() {
-		
-		PasswordEncoder pbkdf2Encoder = new Pbkdf2PasswordEncoder("", 8, 185000, SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
-		Map<String, PasswordEncoder> encoders = new HashMap<>();
-		encoders.put("pbkdf2", pbkdf2Encoder);
-		DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder("pbkdf2", encoders);
-		
-		passwordEncoder.setDefaultPasswordEncoderForMatches(pbkdf2Encoder);
-		var pass = passwordEncoder.encode("admin123");
-		var pass2 = passwordEncoder.encode("admin456");
-		
-		System.out.println("Key "+pass);
-		System.out.println("Key "+pass2);
-	}
 }

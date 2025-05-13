@@ -38,4 +38,16 @@ public class AuthService {
 		
 		return ResponseEntity.ok().body(token);
 	}
+	
+	public ResponseEntity<TokenDto> refreshToken(String username, String refreshToken) {
+	    var user = userRepository.findByName(username);
+
+	    if (user == null) {
+	        throw new UsernameNotFoundException("Username " + username + " not found!");
+	    }
+
+	    TokenDto dto = tokenProvider.refreshAcessToken(refreshToken);
+	    return ResponseEntity.ok(dto);
+	}
+	
 }
