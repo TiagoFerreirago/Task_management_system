@@ -37,6 +37,9 @@ public class User implements Serializable,UserDetails {
 	@Column(name = "full_name")
 	private String fullName;
 	
+	@Column(nullable = false, unique = true)
+	private String email;
+	
 	@Column(name = "password")
 	private String password;
 	
@@ -166,10 +169,18 @@ public class User implements Serializable,UserDetails {
 		this.password = password;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(accountNonExpired, accountNonLocked, credentialsNonExpired, enabled, fullName, id, password,
-				permissions, username);
+		return Objects.hash(accountNonExpired, accountNonLocked, credentialsNonExpired, email, enabled, fullName, id,
+				password, permissions, username);
 	}
 
 	@Override
@@ -184,10 +195,11 @@ public class User implements Serializable,UserDetails {
 		return Objects.equals(accountNonExpired, other.accountNonExpired)
 				&& Objects.equals(accountNonLocked, other.accountNonLocked)
 				&& Objects.equals(credentialsNonExpired, other.credentialsNonExpired)
-				&& Objects.equals(enabled, other.enabled) && Objects.equals(fullName, other.fullName)
-				&& Objects.equals(id, other.id) && Objects.equals(password, other.password)
-				&& Objects.equals(permissions, other.permissions) && Objects.equals(username, other.username);
+				&& Objects.equals(email, other.email) && Objects.equals(enabled, other.enabled)
+				&& Objects.equals(fullName, other.fullName) && Objects.equals(id, other.id)
+				&& Objects.equals(password, other.password) && Objects.equals(permissions, other.permissions)
+				&& Objects.equals(username, other.username);
 	}
 
-	
+
 }

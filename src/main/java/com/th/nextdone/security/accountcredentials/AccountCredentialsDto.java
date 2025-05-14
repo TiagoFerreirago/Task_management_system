@@ -1,8 +1,6 @@
 package com.th.nextdone.security.accountcredentials;
 
 import java.io.Serializable;
-import java.util.Objects;
-
 import com.th.nextdone.security.model.User;
 
 public class AccountCredentialsDto implements Serializable {
@@ -12,12 +10,14 @@ public class AccountCredentialsDto implements Serializable {
 	private String username;
 	private String fullName;
 	private String password;
+	private String email;
 	
 	public AccountCredentialsDto() {}
 	
 	public AccountCredentialsDto(User user) {
 		this.username = user.getUsername();
 		this.fullName = user.getFullName();
+		this.email = user.getEmail();
 	}
 	
 	public String getUsername() {
@@ -44,23 +44,13 @@ public class AccountCredentialsDto implements Serializable {
 		this.fullName = fullName;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(fullName, password, username);
+	public String getEmail() {
+		return email;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		AccountCredentialsDto other = (AccountCredentialsDto) obj;
-		return Objects.equals(fullName, other.fullName) && Objects.equals(password, other.password)
-				&& Objects.equals(username, other.username);
+	public void setEmail(String email) {
+		this.email = email;
 	}
-	
+
 	
 }

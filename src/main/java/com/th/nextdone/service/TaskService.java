@@ -10,16 +10,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.th.nextdone.dto.TaskDto;
+import com.th.nextdone.email.EmailService;
 import com.th.nextdone.exception.InvalidDataException;
 import com.th.nextdone.exception.TaskNotFoundException;
 import com.th.nextdone.model.Task;
 import com.th.nextdone.repository.TaskRepository;
+import com.th.nextdone.security.model.User;
 
 @Service
 public class TaskService {
 
 	@Autowired
 	private TaskRepository taskRepository;
+	
+	@Autowired
+	private EmailService emailService;
 	
 	public List<TaskDto>findAll(){
 		List<Task> tasks = taskRepository.findAll();
@@ -112,6 +117,15 @@ public class TaskService {
 		task.setCompleted(true);
 		taskRepository.save(task);
 		TaskDto dto = new TaskDto(task.getId(), task.getTitle(), task.getDescription(), task.isCompleted(), task.getDataCreation());
+		
+		String subject = "Task Completed!";
+		String message = "Congratulations! The task "+ task.getTitle()+" has completed successfully.";
+		User user = task.getUser();
+		System.out.println("Enviando e-mail para: " + user.getEmail());
+		if (user != null && user.getEmail() != null && !user.getEmail().isBlank()) {
+		    emailService.sendEmail(user.getEmail(), subject, message);
+		}
+		
 		return dto;
 	}
 }

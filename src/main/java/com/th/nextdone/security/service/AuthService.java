@@ -61,12 +61,13 @@ public class AuthService {
 		 if (userRepository.existsByUsername(credentials.getUsername())) {
 		        throw new IllegalArgumentException("Username already exists");
 		  }
-		 User currentUser = getCurrentAuthenticatedUser();
-		 checkIsAdmin(currentUser);
+		/* User currentUser = getCurrentAuthenticatedUser();
+		 checkIsAdmin(currentUser);*/
 	
 		var user = new User();
 		user.setUsername(credentials.getUsername());
 		user.setFullName(credentials.getFullName());
+		user.setEmail(credentials.getEmail());
 		user.setPassword(passwordEncoder.encode(credentials.getPassword()));
 		user.setAccountNonExpired(true);
 		user.setAccountNonLocked(true);
@@ -76,13 +77,13 @@ public class AuthService {
 		userRepository.save(user);
 		return new AccountCredentialsDto(user);
 	}
-
-	private void checkIsAdmin(User user) {
+}
+	/*private void checkIsAdmin(User user) {
 		
 		boolean isAdmin = user.getPermissions().stream().anyMatch(p -> "ADMIN".equals(p.getDescription()));
 		
 		if (!isAdmin) {
-	        throw new AccessDeniedException("Apenas administradores podem realizar esta ação.");
+	        throw new AccessDeniedException("Only administrators can perform this action.");
 	    }
 	}
 	
@@ -90,4 +91,4 @@ public class AuthService {
 	    var auth = SecurityContextHolder.getContext().getAuthentication();
 	    return userRepository.findByName(auth.getName());
 	}
-}
+}*/
