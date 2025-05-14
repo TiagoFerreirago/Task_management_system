@@ -34,7 +34,7 @@ public class SecurityConfig {
 	
 	@Bean
 	PasswordEncoder passwordEncoder() {
-		PasswordEncoder pbkdf2Encoder = new Pbkdf2PasswordEncoder("", 8, 185000, SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
+		PasswordEncoder pbkdf2Encoder = new Pbkdf2PasswordEncoder(tokenProvider.getSecretKey(), 8, 185000, SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
 		Map<String, PasswordEncoder> encoders = new HashMap<>();
 		encoders.put("pbkdf2", pbkdf2Encoder);
 		DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder("pbkdf2", encoders);
@@ -56,11 +56,13 @@ public class SecurityConfig {
 				.authorizeHttpRequests( request -> request
 						.requestMatchers(
 								"/auth/signin",
-								"auth/refresh/**",
+								"/auth/refresh/**",
+								"/auth/createacess",
 								"/swagger/ui/**",
 								"/v3/api-docs/**").permitAll()
 						.requestMatchers("/task/**").authenticated()
 						.requestMatchers("/users").denyAll())
+				
 				.cors(cors -> {})
 				.build();
 	}

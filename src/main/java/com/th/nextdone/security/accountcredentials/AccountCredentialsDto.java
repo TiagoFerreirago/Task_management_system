@@ -18,7 +18,6 @@ public class AccountCredentialsDto implements Serializable {
 	public AccountCredentialsDto(User user) {
 		this.username = user.getUsername();
 		this.fullName = user.getFullName();
-		this.password = user.getPassword();
 	}
 	
 	public String getUsername() {

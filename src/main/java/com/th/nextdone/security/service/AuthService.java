@@ -5,11 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.th.nextdone.security.accountcredentials.AccountCredentialsDto;
 import com.th.nextdone.security.accountcredentials.TokenDto;
 import com.th.nextdone.security.jwt.JwtTokenProvider;
+import com.th.nextdone.security.model.User;
 import com.th.nextdone.security.repository.UserRepository;
 
 @Service
@@ -22,6 +24,8 @@ public class AuthService {
 	private JwtTokenProvider tokenProvider;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	public ResponseEntity<TokenDto>signIn(AccountCredentialsDto credentials){
 		
@@ -49,5 +53,24 @@ public class AuthService {
 	    TokenDto dto = tokenProvider.refreshAcessToken(refreshToken);
 	    return ResponseEntity.ok(dto);
 	}
+	
+	public AccountCredentialsDto createAcess(AccountCredentialsDto credentials) {
+		
+		 if (userRepository.existsByUsername(credentials.getUsername())) {
+		        throw new IllegalArgumentException("Username already exists");
+		    }
+		var user = new User();
+		user.setUsername(credentials.getUsername());
+		user.setFullName(credentials.getFullName());
+		user.setPassword(passwordEncoder.encode(credentials.getPassword()));
+		user.setAccountNonExpired(true);
+		user.setAccountNonLocked(true);
+		user.setCredentialsNonExpired(true);
+		user.setEnabled(true);
+		
+		userRepository.save(user);
+		return new AccountCredentialsDto(user);
+	}
+
 	
 }

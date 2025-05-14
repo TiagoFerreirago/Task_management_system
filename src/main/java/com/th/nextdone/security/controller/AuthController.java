@@ -47,6 +47,12 @@ public class AuthController {
 		ResponseEntity<TokenDto> dto = authService.refreshToken(username, refreshToken);
 		return dto;
 	}
+
+	@PostMapping(value = "/createacess")
+	public AccountCredentialsDto createAcess(@RequestBody AccountCredentialsDto credentials) {
+				
+		return authService.createAcess(credentials);
+	}
 	
 	
 	   private static boolean credentialsAreInvalid(AccountCredentialsDto credentials) {
