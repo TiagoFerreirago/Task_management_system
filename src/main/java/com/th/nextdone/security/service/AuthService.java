@@ -2,8 +2,10 @@ package com.th.nextdone.security.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -58,7 +60,10 @@ public class AuthService {
 		
 		 if (userRepository.existsByUsername(credentials.getUsername())) {
 		        throw new IllegalArgumentException("Username already exists");
-		    }
+		  }
+		 User currentUser = getCurrentAuthenticatedUser();
+		 checkIsAdmin(currentUser);
+	
 		var user = new User();
 		user.setUsername(credentials.getUsername());
 		user.setFullName(credentials.getFullName());
@@ -72,5 +77,17 @@ public class AuthService {
 		return new AccountCredentialsDto(user);
 	}
 
+	private void checkIsAdmin(User user) {
+		
+		boolean isAdmin = user.getPermissions().stream().anyMatch(p -> "ADMIN".equals(p.getDescription()));
+		
+		if (!isAdmin) {
+	        throw new AccessDeniedException("Apenas administradores podem realizar esta ação.");
+	    }
+	}
 	
+	private User getCurrentAuthenticatedUser() {
+	    var auth = SecurityContextHolder.getContext().getAuthentication();
+	    return userRepository.findByName(auth.getName());
+	}
 }

@@ -62,6 +62,11 @@ public class Permission implements Serializable,GrantedAuthority {
 		Permission other = (Permission) obj;
 		return Objects.equals(description, other.description) && Objects.equals(id, other.id);
 	}
+
+	@Override
+	public String toString() {
+		return "Permission [description=" + description + "]";
+	}
 	
 	
 
