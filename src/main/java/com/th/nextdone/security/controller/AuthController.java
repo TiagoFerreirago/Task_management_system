@@ -51,7 +51,7 @@ public class AuthController {
 	@PostMapping(value = "/createacess")
 	public AccountCredentialsDto createAcess(@RequestBody AccountCredentialsDto credentials) {
 				
-		return authService.createAcess(credentials);
+		return authService.createAccess(credentials);
 	}
 	
 	

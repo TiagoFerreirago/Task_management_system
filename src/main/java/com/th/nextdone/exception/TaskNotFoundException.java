@@ -12,5 +12,14 @@ public class TaskNotFoundException extends RuntimeException {
 	public TaskNotFoundException(String msg) {
 		super(msg);
 	}
+	
+	public TaskNotFoundException() {
+		super("No tasks found for the given date.");
+	}
+	
+	public TaskNotFoundException(long id) {
+		super("Task with ID " + id + " not found.");
+	}
+	
 
 }

@@ -13,4 +13,8 @@ public class InvalidJwtAuthenticationException extends AuthenticationException {
 	public InvalidJwtAuthenticationException(String msg) {
 		super(msg);
 	}
+	
+	public InvalidJwtAuthenticationException() {
+		super("Access denied: you do not have permission to perform this action.");
+	}
 }

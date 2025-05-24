@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.th.nextdone.dto.TaskDto;
 import com.th.nextdone.email.EmailService;
+import com.th.nextdone.exception.CustomIllegalArgumentException;
 import com.th.nextdone.exception.InvalidDataException;
 import com.th.nextdone.exception.TaskNotFoundException;
 import com.th.nextdone.model.Task;
@@ -32,7 +33,7 @@ public class TaskService {
 			throw new TaskNotFoundException("No tasks found");
 		}
 		List<TaskDto> dtoList = tasks.stream()
-		        .map(p -> new TaskDto(p.getId(), p.getTitle(), p.getDescription(), p.isCompleted(), p.getDataCreation()))
+		        .map(p -> new TaskDto(p.getId(), p.getTitle(), p.getDescription(), p.isCompleted(), p.getDataCreation(),p.getUser()))
 		        .collect(Collectors.toList());
 		return dtoList;
 	}
@@ -40,14 +41,14 @@ public class TaskService {
 	public TaskDto findById(Long id) throws AccountException {
 		
 		Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task with ID " + id + " not found."));
-		TaskDto dto = new TaskDto(task.getId(), task.getTitle(), task.getDescription(), task.isCompleted(), task.getDataCreation());
+		TaskDto dto = new TaskDto(task.getId(), task.getTitle(), task.getDescription(), task.isCompleted(), task.getDataCreation(),task.getUser());
 		return dto;
 	}
 	
 	public List<TaskDto> searchByDate(LocalDate date){
 		
 		if(date == null) {
-			throw new IllegalArgumentException("Date cannot be null.");
+			throw new CustomIllegalArgumentException("Date cannot be null.");
 		}
 		List<Task> tasks = taskRepository.searchByDate(date);
 		
@@ -55,7 +56,7 @@ public class TaskService {
 			throw new TaskNotFoundException("No tasks found for the given date.");
 		}
 		List<TaskDto> dtoList = tasks.stream().map(p ->
-		new TaskDto(p.getId(), p.getTitle(), p.getDescription(), p.isCompleted(), p.getDataCreation())).collect(Collectors.toList());
+		new TaskDto(p.getId(), p.getTitle(), p.getDescription(), p.isCompleted(), p.getDataCreation(),p.getUser())).collect(Collectors.toList());
 		return dtoList;
 	}
 	
@@ -75,7 +76,7 @@ public class TaskService {
 			throw new TaskNotFoundException("No tasks found in the specified period.");
 		}
 		List<TaskDto> dtoList = tasks.stream().map(p ->
-		new TaskDto(p.getId(), p.getTitle(), p.getDescription(), p.isCompleted(), p.getDataCreation())).collect(Collectors.toList());
+		new TaskDto(p.getId(), p.getTitle(), p.getDescription(), p.isCompleted(), p.getDataCreation(),p.getUser())).collect(Collectors.toList());
 		return dtoList;
 	}
 	
@@ -86,7 +87,7 @@ public class TaskService {
 		        throw new TaskNotFoundException("No tasks found with status: " + status);
 		 }
 		 List<TaskDto> dtoList = tasks.stream().map(p ->
-			new TaskDto(p.getId(), p.getTitle(), p.getDescription(), p.isCompleted(), p.getDataCreation())).collect(Collectors.toList());
+			new TaskDto(p.getId(), p.getTitle(), p.getDescription(), p.isCompleted(), p.getDataCreation(),p.getUser())).collect(Collectors.toList());
 		return dtoList;
 	}
 	
@@ -95,13 +96,13 @@ public class TaskService {
 		Task task = new Task(taskDto);
 		
 		if(task.getTitle() == null || task.getTitle().isEmpty()) {
-			throw new InvalidDataException("Task title is required");
+			throw new InvalidDataException("Task title is required.");
 		}
 		if(task.getDescription() == null || task.getDescription().isEmpty()) {
-			throw new InvalidDataException("Task description is required");
+			throw new InvalidDataException("Task description is required.");
 		}
 		taskRepository.save(task);
-		TaskDto dto = new TaskDto(task.getId(), task.getTitle(), task.getDescription(), task.isCompleted(), task.getDataCreation());
+		TaskDto dto = new TaskDto(task.getId(), task.getTitle(), task.getDescription(), task.isCompleted(), task.getDataCreation(),task.getUser());
 		
 		return dto;
 	}
@@ -116,7 +117,7 @@ public class TaskService {
 		Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task with ID " + id + " not found."));
 		task.setCompleted(true);
 		taskRepository.save(task);
-		TaskDto dto = new TaskDto(task.getId(), task.getTitle(), task.getDescription(), task.isCompleted(), task.getDataCreation());
+		TaskDto dto = new TaskDto(task.getId(), task.getTitle(), task.getDescription(), task.isCompleted(), task.getDataCreation(),task.getUser());
 		
 		String subject = "Task Completed!";
 		String message = "Congratulations! The task "+ task.getTitle()+" has completed successfully.";

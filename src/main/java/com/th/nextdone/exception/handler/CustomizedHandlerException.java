@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.th.nextdone.exception.CustomAccessDeniedException;
 import com.th.nextdone.exception.InvalidDataException;
 import com.th.nextdone.exception.TaskNotFoundException;
 
@@ -49,7 +49,7 @@ public class CustomizedHandlerException extends ResponseEntityExceptionHandler {
 		ExceptionResponse response = new ExceptionResponse(ex.getMessage(), http.getDescription(false), new Date());
 		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 	}
-	@ExceptionHandler(AccessDeniedException.class)
+	@ExceptionHandler(CustomAccessDeniedException.class)
 	public final ResponseEntity<ExceptionResponse> handleAccessDeniedException(Exception ex, WebRequest http){
 		
 		ExceptionResponse response = new ExceptionResponse(ex.getMessage(), http.getDescription(false), new Date());
