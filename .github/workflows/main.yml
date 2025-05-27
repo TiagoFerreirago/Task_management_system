@@ -36,7 +36,7 @@ jobs:
           name: build-artifacts
           path: target/
 
-  sonar:
+  sonarqube:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
@@ -68,7 +68,6 @@ jobs:
             -Dsonar.java.binaries=target/classes
 
   semgrep:
-    name: Run Semgrep static analysis
     runs-on: ubuntu-latest
     needs: [build]
     steps:
@@ -87,7 +86,7 @@ jobs:
 
   dockerimage:
     runs-on: ubuntu-latest
-    needs: [sonar, semgrep]
+    needs: [sonarqube, semgrep]
 
     steps:
       - name: Checkout Code
