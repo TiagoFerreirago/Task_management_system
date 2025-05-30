@@ -114,15 +114,6 @@ COPY target/task-management-system.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
 
-#### **Secção de Contribuição**  
-```markdown
-## Contribuição
-1. **Requisitos**: Java 17, Docker, Maven/Gradle.
-2. **Fluxo de Trabalho**:
-   - Realize fork do repositório.
-   - Crie branches para novas funcionalidades.
-   - Certifique-se de que os testes e análises (SonarQube/Semgrep) passem com sucesso.
-
 
 
 
