@@ -105,10 +105,13 @@ docker run -p 8080:8080 task-management-system
 
 #### **Arquivo Dockerfile**
 
-# Exemplo (se existir no repositório):
+#### Exemplo (se existir no repositório):
+
+```dockerfile
 FROM openjdk:17-jdk-slim
 COPY target/task-management-system.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
+```
 
 #### **Secção de Contribuição**  
 ```markdown
