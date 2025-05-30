@@ -7,11 +7,12 @@ Plataforma para gerenciamento de tarefas com autenticação JWT, notificações 
 - [Funcionalidades Principais](#funcionalidades-principais)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Como Executar](#como-executar)
-- [Documentação da API](#documentação-da-api)
-- [Testes](#testes)
-- [Segurança](#segurança)
-- [Notificações](#notificações)
-- [Busca de Tarefas](#busca-de-tarefas)
+- [Documentação da API](#documentação-da-api-swagger)
+- [Testes](#testes-e-segurança)
+- [Notificações](#notificações-por-e-mail)
+- [CI/CD e Deploy](#cicd-e-deploy-automatizado)
+- [Docker](#docker)
+- [Contribuição](#secção-de-contribuição)
 
 ## Funcionalidades Principais
 
