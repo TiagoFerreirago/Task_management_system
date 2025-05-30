@@ -10,9 +10,8 @@ Plataforma para gerenciamento de tarefas com autenticação JWT, notificações 
 - [Documentação da API](#documentação-da-api-swagger)
 - [Testes](#testes-e-segurança)
 - [Notificações](#notificações-por-e-mail)
-- [CI/CD e Deploy](#cicd-e-deploy-automatizado)
+- [CI/CD e Deploy](#cicd-e-deploy)
 - [Docker](#docker)
-- [Contribuição](#secção-de-contribuição)
 
 ## Funcionalidades Principais
 
@@ -63,10 +62,15 @@ Plataforma para gerenciamento de tarefas com autenticação JWT, notificações 
    
 ## Documentação da API (Swagger)
    
-Acesse `http://localhost:8080/swagger-ui.html` para explorar endpoints como:
-- `POST /tasks` (Criar tarefa)
-- `GET /tasks?status=CONCLUIDA` (Buscar por status)
-- `GET /tasks?startDate=2024-01-01&endDate=2024-01-31` (Busca entre datas)
+Acesse `http://localhost:8085/swagger-ui/index.html/` para explorar endpoints como:
+- `GET /task/v1/{id}` (Buscar tarefa por ID)
+- `GET /task/v1` (Buscar todas tarefas)
+- `GET /task/v1/completed?status="Pendente ou Concluida"` (Buscar por status)
+- `GET /task/v1/by-date?date=2024-04-21` (Buscar por tarefa pela data)
+- `GET /task/v1/between-date/?firstDate=2024-01-01&lastDate=2024-01-31` (Buscar tarefa entre datas)
+- `PUT /tasks/v1/{id}` (Atualizar tarefa)
+- `POST /tasks/v1` (Criar tarefa) 
+- `DELETE /tasks/v1/{id}` (Excluir tarefa)
 
 ## Testes e Segurança
 
@@ -74,9 +78,14 @@ Acesse `http://localhost:8080/swagger-ui.html` para explorar endpoints como:
   Execute `./mvnw test` para rodar testes com JUnit 5 e Mockito.
 - **Exceções Customizadas**:  
   Exemplo: `TaskNotFoundException` é lançado ao buscar uma tarefa inexistente.
-- **Autenticação JWT**:  
-  Use o endpoint `POST /auth` para obter um token JWT e inclua-o no header `Authorization: Bearer <token>`.
-
+- **Autenticação JWT**:
+  
+  Use o endpoint `POST /auth/signin` para obter um token JWT e inclua-o no header `Authorization: Bearer <token>`.
+  
+  Para renovar o token expirado, utilize o endpoint `PUT /auth/refresh/{username}` incluindo o token de atualização no header `Authorization: Bearer <tokenrefresh>`.
+  
+  Use o endpoint `POST /auth/createacess` para criar um usuário (função exclusiva do administrador) e inclua o tokenJWT no header `Authorization: Bearer <token>`.
+  
 ## Notificações por E-mail
 
 Quando uma tarefa é marcada como concluída, um e-mail é enviado automaticamente para o responsável.  
@@ -84,7 +93,6 @@ Configure as credenciais do e-mail no `application.properties ou application.yml
 
 ## CI/CD e Deploy
 
-## CI/CD e Deploy Automatizado
 O projeto utiliza **GitHub Actions** para:
 1. Executar testes unitários e integração.
 2. Realizar **análises de código** com **SonarQube** e **Semgrep**.
